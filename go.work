@@ -1,0 +1,30 @@
+go 1.25.0
+
+use (
+	./events
+	./events/natsjs
+	./events/otel
+	./events/pg
+	./alarms
+	./examples
+	./health
+	./httpserver
+	./lifecycle
+	./logx
+	./logx/zerolog
+	./metrics
+	./metrics/grpc
+	./metrics/http
+	./metrics/nats
+	./metrics/pgx
+	./metrics/redis
+	./otelx
+	./otelx/client/grpc
+	./otelx/client/nats
+	./otelx/client/pgx
+	./otelx/client/redis
+	./otelx/server/grpc
+	./otelx/server/http
+	./resilience
+	./resilience/otel
+)

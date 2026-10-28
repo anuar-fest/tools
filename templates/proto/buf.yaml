@@ -1,0 +1,13 @@
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+  except:
+    - PACKAGE_VERSION_SUFFIX # enable once every package is <domain>.v1
+  rpc_allow_same_request_response: false
+breaking:
+  use:
+    - FILE
+  ignore_unstable_packages: true

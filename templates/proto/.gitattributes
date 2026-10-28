@@ -1,0 +1,3 @@
+gen/** linguist-generated=true -diff merge=ours
+*.pb.go linguist-generated=true -diff merge=ours
+* text=auto eol=lf

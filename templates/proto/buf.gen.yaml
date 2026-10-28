@@ -1,0 +1,17 @@
+version: v2
+# Remote plugins: the generator version is in this file and nowhere else.
+# Output depends only on the .proto files and these versions.
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.36.6
+    out: gen/go
+    opt: paths=source_relative
+  # Uncomment for gRPC services:
+  # - remote: buf.build/grpc/go:v1.5.1
+  #   out: gen/go
+  #   opt: paths=source_relative
+clean: true
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/your-org/your-contracts/gen/go
