@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.list.outputs.modules }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        # One matrix entry per go.mod so a failure names the module.
+        run: |
+          mods=$(find . -name go.mod -not -path './templates/*' -exec dirname {} \; | sort | sed 's|^\./||' | jq -R . | jq -cs .)
+          echo "modules=$mods" >> "$GITHUB_OUTPUT"
+
+  verify:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.discover.outputs.modules) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          # The toolchain is pinned by the module, never by "stable".
+          go-version-file: ${{ matrix.module }}/go.mod
+          cache-dependency-path: ${{ matrix.module }}/go.sum
+      - name: tidy check
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+      - name: fmt
+        run: test -z "$(gofmt -l .)"
+      - name: vet
+        run: go vet ./...
+      - name: build
+        run: go build ./...
+      - name: lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.13.2
+          working-directory: ${{ matrix.module }}
+          args: --config ${{ github.workspace }}/.golangci.yml ./...
+      - name: test
+        # Docker is available on ubuntu runners; integration tests use testcontainers.
+        run: go test -race -count=1 -shuffle=on ./...

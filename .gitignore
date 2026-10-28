@@ -1,0 +1,19 @@
+# binaries and build output
+/bin/
+/dist/
+*.test
+*.out
+coverage.*
+
+# editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+# local env
+.env
+.env.*
+!.env.example
+
+# go workspace sums are local
+go.work.sum
