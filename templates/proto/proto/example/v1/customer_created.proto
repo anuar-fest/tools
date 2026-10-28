@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package example.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Payload of the event type "example.customer.created.v1". Event metadata
+// (id, tenant, correlation, trace) travels in transport headers, not here.
+message CustomerCreated {
+  string customer_id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+
+  // Fields that were removed stay reserved forever so numbers are never reused.
+  reserved 4;
+  reserved "legacy_owner";
+}

@@ -1,0 +1,12 @@
+# Generated code: never hand-edit, never format-on-save, collapsed in review.
+*.pb.go           linguist-generated=true -diff merge=ours
+*_mock.go         linguist-generated=true -diff
+mock_*.go         linguist-generated=true -diff
+go.sum            linguist-generated=true -diff
+go.work.sum       linguist-generated=true -diff
+
+# Normalise line endings so generated output is identical on every OS.
+* text=auto eol=lf
+*.go text eol=lf
+*.proto text eol=lf
+Makefile text eol=lf

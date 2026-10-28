@@ -1,0 +1,78 @@
+# golangci-lint v2 configuration shared by every module in this repo.
+# Each module is linted from its own directory: `make lint`.
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  build-tags:
+    - integration
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - bodyclose
+    - contextcheck
+    - copyloopvar
+    - depguard
+    - errname
+    - errorlint
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - noctx
+    - prealloc
+    - revive
+    - unconvert
+    - unparam
+    - usetesting
+  settings:
+    depguard:
+      rules:
+        main:
+          deny:
+            - pkg: github.com/pkg/errors
+              desc: use the standard library errors package and %w
+            - pkg: github.com/stretchr/testify
+              desc: tests use the standard testing package; keep the dependency graph thin
+            - pkg: github.com/cenkalti/backoff
+              desc: use resilience/retry which owns jitter, budget and classification
+    govet:
+      enable:
+        - shadow
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    revive:
+      rules:
+        - name: context-as-argument
+        - name: error-return
+        - name: error-strings
+        - name: unexported-return
+        - name: var-naming
+    gosec:
+      excludes:
+        - G404 # math/rand is used for jitter, not security
+  exclusions:
+    rules:
+      # A gRPC stream interceptor has no context parameter; the stream carries it (ss.Context()).
+      - linters: [contextcheck]
+        text: 'Stream->Stream\$1` should pass the context parameter'
+      - path: _test\.go
+        linters:
+          - gosec
+          - noctx
+          - unparam
+          - bodyclose
+      - path: _test\.go
+        text: "shadow"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/anuar-fest/tools
